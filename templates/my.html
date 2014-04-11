@@ -1,72 +1,69 @@
 {% extends "base.html" %}
-
 {% block content %}
-<fieldset id="mybooks">
-    <legend>已订阅</legend>
-    {% set hasitem = [] %}
-    {% for book in books %}
-    {% if book.builtin and nickname in book.users %}
-    <div class="book">
-        <div class="titleRow">{{book.title}}</div>
-        <div class="cornerControls">
-            <a href="/unsubscribe/{{book.key().id()}}" class="actionButton">退订</a>
-        </div>
-        <div class="summaryRow">{{book.description}}</div>
-    </div>
-    {% do hasitem.append(1) %}
-    {% endif %}
-    {% endfor %}
-    {% if not hasitem %}
-    <p style="font-size:0.8em;color:grey;">暂时没有已订阅的书籍</p>
-    {% endif %}
-</fieldset>
-{% if ownfeeds %}
-<p></p>
+{% if myfeeds -%}
 <fieldset id="ownfeeds">
-    <legend>自定义RSS</legend>
-    {% for feed in ownfeeds %}
+    <legend>{{_("Custom Rss")}}</legend>
+    {% for feed in myfeeds -%}
     <div class="book">
-        <div class="titleRow">{{feed.title}}</div>
-        <div class="cornerControls">
-            <a href="/delfeed/{{feed.key().id()}}" class="actionButton">删除</a>
-        </div>
-        <div class="summaryRow">{{feed.url}}</div>
-    </div>
-    {% endfor %}
-    <form action="" method="POST">
-    <div class="book">
-        <div class="titleRow">
-            <input type="text" name="t" placeholder="标题" />
+        <div class="titleRow">{{feed.title}} {% if feed.isfulltext %}
+            <img alt="{{_("Fulltext")}}" src="static/fulltext.gif" border="0" />{% endif %}
         </div>
         <div class="cornerControls">
-            <input type="submit" value="添加" class="actionButton" />
+            <a href="/delfeed/{{feed.key().id()}}" class="actionButton">{{_("Delete")}}</a>
         </div>
         <div class="summaryRow">
-            <input type="text" name="url" style="width:100%;"  placeholder="URL" />
+            <a href="{{feed.url}}" target="_blank" style="text-decoration:none;color:grey;" 
+                {%if feed.url|length>80%}title="{{feed.url}}"{%endif%}>
+            {%if feed.url|length>80%}{{feed.url[:80]}}...{%else%}{{feed.url}}{%endif%}</a>
         </div>
+    </div>
+    {% endfor -%}
+    <form class="pure-form" action="" method="POST">
+    <div class="book" style="border-bottom:0;">
+        <div class="titleRow">
+            <input type="text" name="t" placeholder={{_("Title")}} style="width:250px;" />
+            <input type="checkbox" name="fulltext" checked="checked" />
+            <img alt="{{_("Fulltext")}}" src="static/fulltext.gif" border="0" />
+        </div>
+        <div class="summaryRow">
+            <input type="text" name="url" style="width:600px;margin-top:8px;" placeholder="URL" />
+        </div>
+        <input type="submit" value="{{_("Add")}}" class="pure-button pure-button-primary" style="margin-top:8px;" />
         {% if tips %}<p style="color:red;font-size:0.7em;">{{tips}}</p>{% endif %}
     </div>
     </form>
 </fieldset>
-{% endif %}
-<p></p>
-<fieldset id="books">
-    <legend>未订阅</legend>
-    {% set hasitem2 = [] %}
-    {% for book in books %}
-    {% if book.builtin and nickname not in book.users %}
+{% endif -%}
+<fieldset id="mybooks" style="margin-top:10px;">
+    <legend>{{_("Subscribed")}}</legend>
+    {% for book in books -%}
+    {% if nickname in book.users -%}
     <div class="book">
         <div class="titleRow">{{book.title}}</div>
         <div class="cornerControls">
-            <a href="/subscribe/{{book.key().id()}}" class="actionButton">订阅</a>
+            <a href="/unsubscribe/{{book.key().id()}}" class="actionButton">{{_("Unsubscribe")}}</a>
         </div>
-        <div class="summaryRow">{{book.description}}</div>
+        <div class="summaryRow">
+            {%if book.description|length>80%}{{book.description[:80]}}...<span>{{book.description}}</span>{%else%}{{book.description}}{%endif%}
+        </div>
     </div>
-    {% do hasitem2.append(1) %}
-    {% endif %}
-    {% endfor %}
-    {% if not hasitem2 %}
-    <p style="font-size:0.8em;color:grey;">暂时没有未订阅的书籍</p>
-    {% endif %}
+    {% endif -%}
+    {% endfor -%}
 </fieldset>
-{% endblock %}
+<fieldset id="books" style="margin-top:10px;">
+    <legend>{{_("Unsubscribed")}}</legend>
+    {% for book in books -%}
+    {% if nickname not in book.users -%}
+    <div class="book">
+        <div class="titleRow">{{book.title}}</div>
+        <div class="cornerControls">
+            <a href="/subscribe/{{book.key().id()}}" class="actionButton">{{_("Subscribe")}}</a>
+        </div>
+        <div class="summaryRow">
+            {%if book.description|length>80%}{{book.description[:80]}}...<span>{{book.description}}</span>{%else%}{{book.description}}{%endif%}
+        </div>
+    </div>
+    {% endif -%}
+    {% endfor -%}
+</fieldset>
+{% endblock -%}

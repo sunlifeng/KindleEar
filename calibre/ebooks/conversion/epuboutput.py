@@ -7,6 +7,7 @@ __copyright__ = '2009, Kovid Goyal <kovid@kovidgoyal.net>'
 __docformat__ = 'restructuredtext en'
 
 import os, zipfile, re
+from calibre.utils.img import rescale_image
 
 block_level_tags = (
       'address',
@@ -170,9 +171,28 @@ class EPUBOutput:
                 raw = etree.tostring(root, pretty_print=True,encoding='utf-8', xml_declaration=True)
                 epub.writestr('OEBPS/%s' % href, raw)
         
+        from calibre.ebooks.oeb.base import OEB_RASTER_IMAGES
         for item in oeb.manifest:
-            epub.writestr('OEBPS/%s' % item.href, str(item), compress_type=compress)
-
+            if item.media_type in OEB_RASTER_IMAGES:
+                try:
+                    img = self.process_image(str(item))
+                except:
+                    self.log.warn('Bad image file %r.' % item.href)
+                else:
+                    epub.writestr('OEBPS/%s' % item.href, img, compress_type=compress)
+            else:
+                epub.writestr('OEBPS/%s' % item.href, str(item), compress_type=compress)
+    
+    def process_image(self, data):
+        if not self.opts.process_images or self.opts.process_images_immediately:
+            return data
+        if self.opts.mobi_keep_original_images:
+            return mobify_image(data)
+        else:
+            return rescale_image(data, png2jpg=self.opts.image_png_to_jpg,
+                            graying=self.opts.graying_image,
+                            reduceto=self.opts.reduce_image_to)
+    
     def workaround_ade_quirks(self):
         """
         Perform various markup transforms to get the output to render correctly

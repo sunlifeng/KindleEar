@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding:utf-8 -*-
 # vim:fileencoding=UTF-8:ts=4:sw=4:sta:et:sts=4:ai
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
@@ -22,11 +23,11 @@ from calibre.ebooks.mobi.utils import (encint, encode_trailing_data,
 from calibre.ebooks.mobi.writer2.indexer import Indexer
 
 # Modify by Arroz, you can add more languages supported here.
-dictLng = {   "en":0x009,"en-us":0x409,"en-gb":0x809,   "pt":0x016,"pt-br":0x416,
+dictlng = {   "en":0x009,"en-us":0x409,"en-gb":0x809,   "pt":0x016,"pt-br":0x416,
            "pt-pt":0x816,   "zh":0x004,"zh-cn":0x804,"zh-tw":0x404,"zh-hk":0xc04,
               "es":0x00a,"es-es":0x40a,   "fr":0x00c,"fr-fr":0x40c,   "de":0x007,
            "de-de":0x407,   "it":0x010,"it-it":0x410,   "ja":0x011,"ja-jp":0x411,
-              "ru":0x019,"ru-ru":0x819,}
+              "ru":0x019,"ru-ru":0x819,   "tr":0x01f,"tr-tr":0x41f,}
 
 # Disabled as I dont care about uncrossable breaks
 WRITE_UNCROSSABLE_BREAKS = False
@@ -106,8 +107,8 @@ class MobiWriter(object):
                     len(self.records[self.last_text_record_idx]),
                     self.masthead_offset, self.is_periodical,
                     self.opts, self.oeb)
-        except:
-            self.log.exception('Failed to generate MOBI index:')
+        except Exception, e:
+            self.log.exception('Generate index Failed:%s'%str(e))
         else:
             self.primary_index_record_idx = len(self.records)
             for i in xrange(self.last_text_record_idx + 1):
@@ -285,8 +286,11 @@ class MobiWriter(object):
             0xe8 + 16 + len(exth), len(title)))
         
         # 0x4c - 0x4f : Language specifier
-        nLng = dictLng.get(str(metadata.language[0]).lower(), 0x009)
-        record0.write(pack(b'>I', nLng))
+        lng = str(metadata.language[0]).lower()
+        nlng = dictlng.get(lng)
+        if not nlng:
+            nlng = dictlng.get(lng.split('-')[0], 0x009) if '-' in lng else 0x009
+        record0.write(pack(b'>I', nlng))
         
         # 0x50 - 0x57 : Input language and Output language
         record0.write(b'\0' * 8)
@@ -464,9 +468,9 @@ class MobiWriter(object):
         '''
         Write the PalmDB header
         '''
-        # modify by arroz, unicode() -> str()
-        title = ascii_filename(str(self.oeb.metadata.title[0])).replace(
-                ' ', '_')[:31]
+        # modify by arroz, src is unicode(self.oeb.metadata.title[0])
+        t = unicode(str(self.oeb.metadata.title[0]), "utf-8")
+        title = ascii_filename(t).replace(' ', '_')[:31]
         title = title + (b'\0' * (32 - len(title)))
         now = int(time.time())
         nrecords = len(self.records)
@@ -483,4 +487,5 @@ class MobiWriter(object):
         for record in self.records:
             self.write(record)
 
-
+ 
+ 

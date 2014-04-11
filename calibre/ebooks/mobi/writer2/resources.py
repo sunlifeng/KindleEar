@@ -35,11 +35,15 @@ class Resources(object):
         self.add_resources(add_fonts)
 
     def process_image(self, data):
-        if not self.process_images:
+        if not self.process_images or self.opts.process_images_immediately:
             return data
-        return (mobify_image(data) if self.opts.mobi_keep_original_images else
-                rescale_image(data))
-
+        if self.opts.mobi_keep_original_images:
+            return mobify_image(data)
+        else:
+            return rescale_image(data, png2jpg=self.opts.image_png_to_jpg,
+                            graying=self.opts.graying_image,
+                            reduceto=self.opts.reduce_image_to)
+        
     def add_resources(self, add_fonts):
         oeb = self.oeb
         oeb.logger.info('Serializing resources...')
@@ -70,16 +74,17 @@ class Resources(object):
         for item in self.oeb.manifest.values():
             if item.media_type not in OEB_RASTER_IMAGES:
                 continue
+            
             try:
                 data = self.process_image(item.data)
-            except:
-                self.log.warn('Bad image file %r' % item.href)
+            except Exception,e:
+                self.log.warn('Bad image file %r : %s' % (item.href,str(e)))
                 continue
             else:
                 if mh_href and item.href == mh_href:
                     self.records[0] = data
                     continue
-
+                
                 self.image_indices.add(len(self.records))
                 self.records.append(data)
                 self.item_map[item.href] = index

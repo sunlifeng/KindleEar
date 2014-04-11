@@ -10,8 +10,18 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Book
+  properties:
+  - name: builtin
+  - name: users
+
 - kind: DeliverLog
   properties:
   - name: username
   - name: time
     direction: desc
+
+- kind: Feed
+  properties:
+  - name: book
+  - name: time

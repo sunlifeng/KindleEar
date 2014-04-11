@@ -2,8 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KindleEar is a service for Amazon Kindle owners that lets you aggregate feeds you chosen and have them delivered to your Kindle in a convenient, easy-to-navigate format." />    
     <title>{{title}} - Kindle's Ear</title>
-    <meta name="description" content="KindleEar is a service for Amazon Kindle owners that lets you aggregate feeds you chosen and have them delivered to your Kindle in a convenient, easy-to-navigate format." />
+    <link rel="stylesheet" href="/static/pure-min.css" type="text/css" charset="utf-8"/>
     <link rel="stylesheet" href="/static/base.css" type="text/css" charset="utf-8"/>
     {% block cssfiles %}{% endblock %}
     {% block css %}{% endblock %}
@@ -15,54 +17,60 @@
 {% endblock %}
     <div id="header">
         {% block header %}
-        <h1><a href="/">KindleEar<sup>&reg;</sup></a></h1>
+        <h1><a href="/">KindleEar</a></h1>
         {% if nickname %}
-          <a class="nav" href="/logout">退出</a>
+          <a class="nav" href="/logout">{{_("Logout")}}</a>
           <span style="color: #ccc;">&bull;</span>
         <span>Hello, <a href="/admin"><strong>{{nickname}}</strong></a></span>
+        {% else %}
+        <form class="pure-form headerloginform" action="/login" method="POST">
+            <input type="text" class="pure-u-1-6" placeholder={{_("Name")}} name="u" id="u" />
+            <input type="password" class="pure-u-1-6" placeholder={{_("Password")}} name="p" />
+            <input type="submit" class="pure-button pure-button-small" value={{_("Login")}} />
+        </form>
         {% endif %}
         <div class="clear"></div>
         {% endblock %}
     </div>
-    <div id="menubar">
     {% block menubar %}
     {% if nickname %}
-        <h2 id="categoryHeader"> 
+    <div class="pure-skin-mine">
+    <div class="pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
         {% if current == "my" %}
-        我的订阅
+        <li class="pure-menu-selected"><a href="#">{{_("Feeds")}}</a></li>
         {% else %}
-        <a style="font-weight:normal;" href="/my">我的订阅</a>
+        <li><a href="/my">{{_("Feeds")}}</a></li>
         {% endif %}
-        <span style="color: #ccc;">&bull;</span>
         {% if current == "setting" %}
-        设置
+        <li class="pure-menu-selected"><a href="#">{{_("Setting")}}</a></li>
         {% else %}
-        <a style="font-weight:normal;" href="/setting">设置</a>
+        <li><a href="/setting">{{_("Setting")}}</a></li>
         {% endif %}
-        <span style="color: #ccc;">&bull;</span>
         {% if current == "logs" %}
-        投递日志
+        <li class="pure-menu-selected"><a href="#">{{_("Logs")}}</a></li>
         {% else %}
-        <a style="font-weight:normal;" href="/logs">投递日志</a>
+        <li><a href="/logs">{{_("Logs")}}</a></li>
         {% endif %}
-        <span style="color: #ccc;">&bull;</span>
         {% if current == "admin" %}
-        账户管理
+        <li class="pure-menu-selected"><a href="#">{{_("Admin")}}</a></li>
         {% else %}
-        <a style="font-weight:normal;" href="/admin">账户管理</a>
+        <li><a href="/admin">{{_("Admin")}}</a></li>
         {% endif %}
-        <span style="color: #ccc;">&bull;</span>
-        {% if current == "feedback" %}
-        反馈
+        {% if current == "advsetting" %}
+        <li class="pure-menu-selected"><a href="#">{{_("Advance")}}</a></li>
         {% else %}
-        <a style="font-weight:normal;" href="/feedback">反馈</a>
+        <li><a href="/advwhitelist">{{_("Advance")}}</a></li>
         {% endif %}
-        </h2>
+        </ul>
+    </div>
+    </div>
     {% else %}
-        <h2 style="text-align:center;padding:10px 0;"><a href="/login">请先登陆</a></h2>
+        {#<h2 style="text-align:center;padding:10px 0;"><a href="/login">{{_("Please Login")}}</a></h2>#}
+    </div>
+    </div>
     {% endif %}
     {% endblock %}
-    </div>
     <div id="content">
     {% block content %}
     {% endblock %}
@@ -70,7 +78,15 @@
     <div id="footer">
         {% block footer %}
         <div class="clear"></div>
-        2013 &copy; KindleEar | <a href="https://github.com/cdhigh/kindleear">Github page</a>
+        2013 &copy; KindleEar&nbsp;@{{version}}&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="/static/faq{%if lang and not lang.startswith('zh')%}_en{%endif%}.html" target="_blank" style="text-decoration:none;">FAQ</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="https://github.com/cdhigh/kindleear" target="_blank" style="text-decoration:none;">Github page</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://appengine.google.com" target="_blank" style="text-decoration:none;">App Engine</a>
+        <div style="float:right;"><a href="/lang/en"><img src="/static/us.gif" alt="EN" /></a>
+        <a href="/lang/zh-cn"><img src="/static/cn.gif" alt="CN" /></a>
+        <a href="/lang/tr-tr"><img src="/static/tr.gif" alt="TR" /></a></div>
         {% endblock %}
     </div>
 </body>
