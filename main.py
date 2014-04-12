@@ -1361,7 +1361,7 @@ class DbViewer(BaseHandler):
                 urlenc.delete()
         return self.render('dbviewer.html', "DbViewer",
             books=Book.all(),users=KeUser.all(),
-            feeds=Feed.all().order('book'),urlencs=UrlEncoding.all())
+            feeds=Feed.all().order('book'),urlencs=UrlEncoding.all(),current='dbviewer')
         
 def fix_filesizeformat(value, binary=False):
     " bugfix for do_filesizeformat of jinja2 "

@@ -94,6 +94,9 @@ msgstr "账户管理"
 msgid "Advance"
 msgstr "高级设置"
 
+msgid "DbViewer"
+msgstr "数据浏览"
+
 msgid "Please Login"
 msgstr "请先登陆"
 
@@ -339,6 +342,8 @@ msgstr "俄语"
 
 msgid "Turkish"
 msgstr "土耳其语"
+
+
 
 msgid "Keep images"
 msgstr "保留文章图片"
