@@ -62,6 +62,12 @@
         {% else %}
         <li><a href="/advwhitelist">{{_("Advance")}}</a></li>
         {% endif %}
+        {% if current == "dbviewer" %}
+        <li class="pure-menu-selected"><a href="#">{{_("DbViewer")}}</a></li>
+        {% else %}
+        <li><a href="/advwhitelist">{{_("DbViewer")}}</a></li>
+        {% endif %}
+        
         </ul>
     </div>
     </div>
