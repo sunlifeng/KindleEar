@@ -1331,7 +1331,11 @@ hendler = web_controller.Handler()
 
 class Gear:
     def GET(self, args = False):
+        return "hello world"
         return hendler.control(args)
+    def POST(self,args=False):
+        return hendler.control(args)
+        
 
 
 application = web.application(urls, globals())
