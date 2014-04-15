@@ -25,7 +25,8 @@ supported_languages = ['en','zh-cn','tr-tr'] #不支持的语种则使用第一�
 #gettext.install('lang', 'i18n', unicode=True) #for calibre startup
 
 import web
-import web_
+import web_controller
+
 import jinja2
 from bs4 import BeautifulSoup
 from google.appengine.api import mail
