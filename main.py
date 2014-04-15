@@ -25,6 +25,7 @@ supported_languages = ['en','zh-cn','tr-tr'] #不支持的语种则使用第一�
 #gettext.install('lang', 'i18n', unicode=True) #for calibre startup
 
 import web
+import web_
 import jinja2
 from bs4 import BeautifulSoup
 from google.appengine.api import mail
@@ -1319,7 +1320,18 @@ urls = (
   "/advdel", "AdvDel",
   "/test", "Test",
   "/dbviewer","DbViewer",
+  '/(.*)', 'Gear',
+
 )
+
+
+
+hendler = web_controller.Handler()
+
+class Gear:
+    def GET(self, args = False):
+        return hendler.control(args)
+
 
 application = web.application(urls, globals())
 store = MemcacheStore(memcache)
