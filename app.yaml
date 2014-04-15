@@ -16,6 +16,7 @@ libraries:
 
 inbound_services:
 - mail
+- xmpp_message
 
 handlers:
 - url: /favicon.ico
@@ -28,7 +29,10 @@ handlers:
 
 - url: /_ah/mail/.+
   script: handlemail.appmail
-  
+
+- url: /_ah/xmpp/message/chat/
+  script: bot.py  
+
 - url: /.*
   script: main.app
   
