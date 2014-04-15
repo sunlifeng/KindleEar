@@ -1321,8 +1321,8 @@ urls = (
   "/advdel", "AdvDel",
   "/test", "Test",
   "/dbviewer","DbViewer",
-  '/testing', 'Gear',
-  '/(.*)', 'Home',
+  "/testing", "Gear",
+  "/(.*)", "Home",
 )
 
 
