@@ -30,12 +30,13 @@ handlers:
 - url: /_ah/mail/.+
   script: handlemail.appmail
 
-- url: /_ah/xmpp/message/chat
-  script: bot.app
+- url: /hello
+  script: bot.appbot
+
+- url: /_ah/xmpp/message/chat/
+  script: bot.appbot
 
 - url: /.*
   script: main.app
-  
-inbound_services:
-- xmpp_message
-- xmpp_presence
+
+
