@@ -9,10 +9,10 @@ class XMPPHandler(webapp2.RequestHandler):
         message = xmpp.Message(self.request.POST)
         if message.body[0:5].lower() == 'hello':
             message.reply("Greetings!")
+    def get(self):
+        return "hello world"
 
 
-urls = (
-  '/(.*)', 'XmppHandler',)
 
 app = webapp2.WSGIApplication([('/_ah/xmpp/message/chat/', XMPPHandler)],
                               debug=True)
