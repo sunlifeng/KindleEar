@@ -31,7 +31,7 @@ handlers:
   script: handlemail.appmail
 
 - url: /_ah/xmpp/message/chat/
-  script: bot.py  
+  script: bot.app 
 
 - url: /.*
   script: main.app
