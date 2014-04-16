@@ -1344,6 +1344,6 @@ session = web.session.Session(application, store, initializer={'username':'','lo
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
 jjenv.filters['filesizeformat'] = fix_filesizeformat
-app = application.wsgifunc()
 
+app = application.wsgifunc()
 web.config.debug = IsRunInLocal
