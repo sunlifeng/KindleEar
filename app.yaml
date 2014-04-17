@@ -32,7 +32,7 @@ handlers:
 
 
 - url: /help
-  script: bot.app
+  script: bot.appbot
 
 - url: /_ah/xmpp/message/chat/
   script: bot.app 
