@@ -93,3 +93,11 @@ class WhiteList(db.Model):
 class UrlFilter(db.Model):
     url = db.StringProperty()
     user = db.ReferenceProperty(KeUser)
+
+class Newses(db.Model):
+    title = db.StringProperty()
+    url = db.StringProperty()
+    content = db.StringProperty()
+    brief = db.StringProperty()
+    datetime = db.DateTimeProperty()
+    #section,url,title,content,brief
