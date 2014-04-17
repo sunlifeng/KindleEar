@@ -20,7 +20,7 @@ inbound_services:
 
 handlers:
 - url: /favicon.ico
-  static_files: static/pipfavicon.ico
+  static_files: static/favicon.ico
   upload: static/favicon.ico
   mime_type: image/x-icon    
 
