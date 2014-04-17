@@ -3,15 +3,21 @@
 
 import web
 import web_controller
+from controllers import * 
+
+
+
 hendler = web_controller.Handler()
 
 urls = (
    "/(.*)", "Gear",
 )
+
+
 class Gear:
-    def GET(self, args = False):
-        return "hello world"
+    def GET(self, args = False):       
         return hendler.control(args)
+
     def POST(self,args=False):
         return hendler.control(args)
 

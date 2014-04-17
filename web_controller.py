@@ -1,11 +1,25 @@
 ## web_controller.py
 
 import os, web
+#from controllers import * 
+#import controllers.help
 
-class Handler:
-    
-    def control(self, args = False):
-        
+class Handler:  
+    def loadControllers(self):
+        for bkfile in os.listdir(os.path.dirname(__file__+"/controllers")):
+            if bkfile.endswith('.py') and not bkfile.startswith('__') and not bkfile.endswith("base.py"):
+                bookname = os.path.splitext(bkfile)[0]
+                try:
+                    mbook = __import__("controllers." + bookname, fromlist='*')
+                   # bk = mbook.getBook()
+                    #globals()[bk.__name__] = getattr(bk, bk.__name__)
+                    #RegisterBook(bk)
+                except Exception as e:
+                    pass
+                    #default_log.warn("Book '%s' import failed : %s" % (bookname,e))
+
+
+    def control(self, args = False):        
         # Set default controller and method name
         controller = 'Home'
         path_file = 'controllers/'
@@ -31,14 +45,25 @@ class Handler:
         path_file += '.py'
         
         # Does controller file exists?
-        if not os.path.isfile(path_file):
+        if not os.path.isfile(path_file):            
             return web.notfound()#'No controller '+ controller +' exists.'
+        try:
+            
+            controller_module= __import__("controllers."+controller.lower(),fromlist='*')            
+
+            #controller_module = __import__(os.path.splitext(bkfile)[0])
+            #controller_module = __import__("controllers."+controller.lower(), globals(), locals(), [controller])                                                
+            
+            controller_instance = getattr(controller_module, controller)()
+            # Does method exists?
+
+            if not hasattr(controller_instance, method_name):            
+                return web.notfound()#'No method '+ method_name +' exists in ' + controller +' instance.'
+        except Exception, e:
+            return e 
+            return "not found controller "+ controller
         
-        controller_module = __import__('controllers.' + controller.lower(), globals(), locals(), [controller])
-        controller_instance = getattr(controller_module, controller)()
         
-        # Does method exists?
-        if not hasattr(controller_instance, method_name):
-            return web.notfound()#'No method '+ method_name +' exists in ' + controller +' instance.'
+       
         
         return getattr(controller_instance, method_name)(*method_args)

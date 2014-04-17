@@ -971,7 +971,12 @@ class Worker(BaseHandler):
             for sec_or_media, url, title, content, brief, thumbnail in book.Items(opts,user):
                 if not sec_or_media or not title or not content:
                     continue
-                
+
+                News = Newses.all().filter("title = ", title).get()
+                if not News:
+                    News = Newses(title=title,url=url,content=content,brief=brief)
+                    News.put()
+        
                 if sec_or_media.startswith(r'image/'):
                     id_, href = oeb.manifest.generate(id='img', href=title)
                     item = oeb.manifest.add(id_, href, sec_or_media, data=content)
@@ -1321,8 +1326,7 @@ urls = (
   "/advdel", "AdvDel",
   "/test", "Test",
   "/dbviewer","DbViewer",
-  "/testing", "Gear",
-  "/(.*)", "Home",
+  "/(.*)", "Gear",
 )
 
 
@@ -1331,7 +1335,6 @@ hendler = web_controller.Handler()
 
 class Gear:
     def GET(self, args = False):
-        return "hello world"
         return hendler.control(args)
     def POST(self,args=False):
         return hendler.control(args)

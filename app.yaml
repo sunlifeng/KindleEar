@@ -30,7 +30,7 @@ handlers:
 - url: /_ah/mail/.+
   script: handlemail.appmail
 
-- url: /hello
+- url: /help
   script: bot.appbot
 
 - url: /_ah/xmpp/message/chat/
