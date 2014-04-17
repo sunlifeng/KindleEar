@@ -20,7 +20,7 @@ inbound_services:
 
 handlers:
 - url: /favicon.ico
-  static_files: static/pipfavicon.ico
+  static_files: static/favicon.ico
   upload: static/favicon.ico
   mime_type: image/x-icon    
 
@@ -30,11 +30,12 @@ handlers:
 - url: /_ah/mail/.+
   script: handlemail.appmail
 
+
 - url: /help
-  script: bot.appbot
+  script: bot.app
 
 - url: /_ah/xmpp/message/chat/
-  script: bot.appbot
+  script: bot.app 
 
 - url: /.*
   script: main.app

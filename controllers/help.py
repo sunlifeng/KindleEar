@@ -27,3 +27,9 @@ class Help:
         except Exception, e:
         	return e 
         #return 
+    def temp(self,**args):
+    	try:
+    		pass
+    	except Exception, e:
+    	   web.notfound()
+    		
