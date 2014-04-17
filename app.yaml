@@ -31,10 +31,10 @@ handlers:
   script: handlemail.appmail
 
 - url: /hello
-  script: bot.appbot
+  script: bot.app
 
 - url: /_ah/xmpp/message/chat/
-  script: bot.appbot
+  script: bot.app 
 
 - url: /.*
   script: main.app
