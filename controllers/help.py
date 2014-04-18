@@ -4,6 +4,8 @@
 import web
 import jinja2
 import gettext
+from books import BookClasses, BookClass
+from model import *
 
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
@@ -19,17 +21,25 @@ class Help:
     
     def __init__(self):
         set_lang("zh-cn")
-        
+    def render(self, templatefile, title='KindleEar', **kwargs):        
+        try:
+            return jjenv.get_template(templatefile).render(title=title, **kwargs)
+        except Exception, e:
+            return e        
+    
     def index(self, **args):	
     	#return "run here "
         try:
-        	return jjenv.get_template('dbviewer.html').render(title="index", **args)
+
+        	return jjenv.get_template('dbviewer.html').render(title="index", 
+                **args)
         except Exception, e:
         	return e 
-        #return 
+        
     def temp(self,**args):
     	try:
-    		pass
+           books=BookClasses()
+    	   return  self.render("help.html",'temp',books=books)
     	except Exception, e:
     	   web.notfound()
     		

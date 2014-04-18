@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block css %}
+<style type="text/css">
+.odd{
+    background-color:#f0f0f0;
+}
+.even{
+    background-color:#e5e5e5;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<p style="text-align:center;color:red;font-weight:bold;">Books</p>
+<table border="1" cellspacing="0" cellpadding="0" align="center" width="100%">
+    <thead>
+    <tr>
+        <th class="center">ID</th>
+        <th class="center">Title</th>
+        <th class="center">Users</th>
+        <th class="center">Builtin</th>
+        <th class="center">Language</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in books %}
+    <tr class={{loop.cycle("odd","even")}}>
+        <td class="center">{{item.title}}</td>      
+        <td class="center">{{item.description}}</td>      
+
+
+
+    </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
