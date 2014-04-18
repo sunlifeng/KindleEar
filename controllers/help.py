@@ -29,8 +29,9 @@ class Help:
     
     def index(self, **args):
 
-    	#return "run here "
         try:
+
+
             return self.render('dbviewer.html','index',books=Book.all(),users=KeUser.all(),
             feeds=Feed.all().order('book'),current='Help', **args)
             
