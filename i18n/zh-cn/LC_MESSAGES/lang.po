@@ -97,10 +97,13 @@ msgstr "高级设置"
 msgid "DbViewer"
 msgstr "数据浏览"
 
+msgid "Help"
+msgstr "帮助"
+
 msgid "Please Login"
 msgstr "请先登陆"
 
-msgid "Change Password"
+msgid "Change Passw`ord"
 msgstr "修改密码"
 
 msgid "Old password"

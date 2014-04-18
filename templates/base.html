@@ -67,7 +67,11 @@
         {% else %}
         <li><a href="/dbviewer">{{_("DbViewer")}}</a></li>
         {% endif %}
-        
+        {% if current == "Help" %}
+        <li class="pure-menu-selected"><a href="#">{{_("Help")}}</a></li>
+        {% else %}
+        <li><a href="/Help">{{_("Help")}}</a></li>
+        {% endif %}
         </ul>
     </div>
     </div>
