@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-
+from google.appengine.api import memcache
 
 from google.appengine.ext import db
 #--------------db models----------------
@@ -94,3 +94,11 @@ class UrlFilter(db.Model):
     url = db.StringProperty()
     user = db.ReferenceProperty(KeUser)
 
+class Newses(db.Model):
+    section = db.StringProperty()
+    title = db.StringProperty()
+    url = db.StringProperty()
+    content = db.StringProperty()
+    brief = db.StringProperty()
+    datetime = db.DateTimeProperty()
+    #section,url,title,content,brief

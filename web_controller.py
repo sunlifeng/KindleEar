@@ -48,5 +48,5 @@ class Handler:
         except Exception, e:
             return e 
             return "not found controller "+ controller
-        return args
+        #return args
         return getattr(controller_instance, method_name)(*method_args)
