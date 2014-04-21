@@ -4,32 +4,31 @@
 import web
 import jinja2
 import gettext
+from books import BookClasses, BookClass
+from model import *
+from BaseHandler import BaseHandler
 
-jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
-                            extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
-#session = web.session.Session(application, store, initializer={'username':'','login':0,"lang":''})
 
-def set_lang(lang):
-    """ 设置网页显示语言 """
-    tr = gettext.translation('lang', 'i18n', languages=[lang])
-    tr.install(True)
-    jjenv.install_gettext_translations(tr)
 
-class Help:
+
+class Help(BaseHandler):
+   
     
-    def __init__(self):
-        set_lang("zh-cn")
-        
-    def index(self, **args):	
-    	#return "run here "
+    def index(self, **args):
+
         try:
-        	return jjenv.get_template('dbviewer.html').render(title="index", **args)
+
+
+            return self.render('dbviewer.html','index',books=Book.all(),users=KeUser.all(),
+            feeds=Feed.all().order('book'),current='Help', **args)
+            
         except Exception, e:
-        	return e 
-        #return 
+            return web.notfound() 
+        
     def temp(self,**args):
     	try:
-    		pass
+           books=BookClasses()
+    	   return  self.render("help.html",'temp',books=books,**args)
     	except Exception, e:
     	   web.notfound()
     		

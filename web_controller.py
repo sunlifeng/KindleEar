@@ -5,19 +5,6 @@ import os, web
 #import controllers.help
 
 class Handler:  
-    def loadControllers(self):
-        for bkfile in os.listdir(os.path.dirname(__file__+"/controllers")):
-            if bkfile.endswith('.py') and not bkfile.startswith('__') and not bkfile.endswith("base.py"):
-                bookname = os.path.splitext(bkfile)[0]
-                try:
-                    mbook = __import__("controllers." + bookname, fromlist='*')
-                   # bk = mbook.getBook()
-                    #globals()[bk.__name__] = getattr(bk, bk.__name__)
-                    #RegisterBook(bk)
-                except Exception as e:
-                    pass
-                    #default_log.warn("Book '%s' import failed : %s" % (bookname,e))
-
 
     def control(self, args = False):        
         # Set default controller and method name
@@ -32,8 +19,7 @@ class Handler:
             
             # Get index key 0 from lists as controller name
             controller = method_args[0].title()
-            
-            # remove key 0 and 1 from list, coz it useless right now
+                        # remove key 0 and 1 from list, coz it useless right now
             method_args.pop(0)
             
             # Get mothod name from index 0
@@ -62,8 +48,5 @@ class Handler:
         except Exception, e:
             return e 
             return "not found controller "+ controller
-        
-        
-       
-        
+        #return args
         return getattr(controller_instance, method_name)(*method_args)
