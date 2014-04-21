@@ -6,7 +6,7 @@ import os
 _booksclasses = []
 def RegisterBook(book):
     if book.title:
-        _booksclasses.append(book)
+        _booksclasses.append(book)        
 
 def BookClasses():
     return _booksclasses
@@ -19,7 +19,7 @@ def BookClass(title):
 
 #def LoadBooks():
 for bkfile in os.listdir(os.path.dirname(__file__)):
-    if bkfile.endswith('.py') and not bkfile.startswith('__') and not bkfile.endswith("base.py"):
+    if bkfile.endswith('.py') and not bkfile.startswith('__') and not bkfile.endswith("base.py"):        
         bookname = os.path.splitext(bkfile)[0]
         try:
             mbook = __import__("books." + bookname, fromlist='*')
@@ -28,5 +28,6 @@ for bkfile in os.listdir(os.path.dirname(__file__)):
             RegisterBook(bk)
         except Exception as e:
             default_log.warn("Book '%s' import failed : %s" % (bookname,e))
+default_log.warn("Book '%s' import failed :" % (_booksclasses))
 
 #LoadBooks()

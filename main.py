@@ -972,10 +972,10 @@ class Worker(BaseHandler):
                 if not sec_or_media or not title or not content:
                     continue
 
-                News = Newses.all().filter("title = ", title).get()
-                if not News:
-                    News = Newses(title=title,url=url,content=content,brief=brief)
-                    News.put()
+                # News = Newses.all().filter("title = ", title).get()
+                # if not News:
+                #     News = Newses(title=title,url=url,content=content,brief=brief)
+                #     News.put()
         
                 if sec_or_media.startswith(r'image/'):
                     id_, href = oeb.manifest.generate(id='img', href=title)

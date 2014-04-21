@@ -7,9 +7,9 @@ from StringIO import StringIO
 from PIL import Image
 
 def getBook():
-    return wenxuecity
+    return WenxueCity
 
-class wenxuecity(WebpageBook):
+class WenxueCity(WebpageBook):
     title                 = u'文学城'
     description           = u'海外最大华人社区'
     language = 'zh-cn'

@@ -3,6 +3,7 @@
 
 
 from google.appengine.ext import db
+from google.appengine.ext import memcache
 #--------------db models----------------
 class Book(db.Model):
     title = db.StringProperty(required=True)
