@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 from google.appengine.api import memcache
-
 from google.appengine.ext import db
-from google.appengine.ext import memcache
+
 #--------------db models----------------
 class Book(db.Model):
     title = db.StringProperty(required=True)
