@@ -42,6 +42,7 @@ from google.appengine.api.mail_errors import (InvalidSenderError,
 from config import *
 from lib.makeoeb import *
 from lib.memcachestore import MemcacheStore
+from lib.helper import Singleton
 from books import BookClasses, BookClass
 from books.base import BaseFeedBook, UrlEncoding, BaseUrlBook
 from lib.helper import singleton
@@ -461,6 +462,7 @@ class Login(BaseHandler):
         if not self.CheckAdminAccount():
             tips = _("Please use admin/admin to login at first time.")
         else:
+            tips = _("Please input username and password.")
             tips = _("Please input username and password.")
         
         if session.get('login') == 1:
@@ -1345,6 +1347,10 @@ class Gear:
 application = web.application(urls, globals())
 store = MemcacheStore(memcache)
 session = web.session.Session(application, store, initializer={'username':'','login':0,"lang":''})
+<<<<<<< HEAD
+=======
+singleton=Singleton()
+>>>>>>> origin/master
 singleton.session=session
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])

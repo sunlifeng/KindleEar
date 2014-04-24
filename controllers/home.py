@@ -1,9 +1,20 @@
 import web
+from model import * 
+from BaseHandler import BaseHandler,login_required
 
 
-views = web.template.render('views/')
+class Home(BaseHandler):
+    """
 
+    """
+    @login_required
+    def index(self, **args):
+        return self.render('home.html',"Home")
 
-class Home:
-    def index(self, *args):
-        return views.index()
+    @login_required    
+    def settings(self,**args):
+
+        user= self.getcurrentuser()
+        return self.render('setting.html',"Setting",
+            current='setting',user=user)
+        #return self.redirect(r"/setting")
