@@ -1081,18 +1081,7 @@ class Share(BaseHandler):
         else:
             return "Unknown parameter 'action'!"
         
-class Mylogs(BaseHandler):
-    def GET(self):
-        user = self.getcurrentuser()
-        mylogs = DeliverLog.all().filter("username = ", user.name).order('-time').fetch(limit=10)
-        logs = {}
-        if user.name == 'admin':
-            for u in KeUser.all().filter("name != ", 'admin'):
-                ul = DeliverLog.all().filter("username = ", u.name).order('-time').fetch(limit=5)
-                if ul:
-                    logs[u.name] =  ul
-        return self.render('logs.html', "Deliver log", current='logs',
-            mylogs=mylogs, logs=logs)
+
         
 class RemoveLogs(BaseHandler):
     def GET(self):

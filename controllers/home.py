@@ -13,10 +13,24 @@ class Home(BaseHandler):
     首页及帐户管理
     """
 
-   
     def index(self, **args):
         """首页"""
+        #default_log.warn("test")
         return self.render('home.html',"Home")
+
+    def logs(self,**args):
+        """投递日志"""
+        user = self.getcurrentuser()
+        mylogs = DeliverLog.all().filter("username = ", user.name).order('-time').fetch(limit=10)
+        logs = {}
+        if user.name == 'admin':
+            for u in KeUser.all().filter("name != ", 'admin'):
+                ul = DeliverLog.all().filter("username = ", u.name).order('-time').fetch(limit=5)
+                if ul:
+                    logs[u.name] =  ul
+        return self.render('logs.html', "Deliver log", current='logs',
+            mylogs=mylogs, logs=logs)
+
 
     @login_required    
     def delaccount(self,**args):
@@ -157,7 +171,7 @@ class Home(BaseHandler):
         return self.render('setting.html',"Setting",
             current='setting',user=user,tips=tips)
         #return self.redirect(r"/setting")
-
+    @login_required
     def MySubscription(self,**args):
         user = self.getcurrentuser()
         tips=args["url"]
