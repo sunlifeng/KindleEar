@@ -4,7 +4,7 @@ import os, web
 #from controllers import * 
 #import controllers.help
 
-class Handler:  
+class Handler(object):  
 
     def control(self, args = False):        
         # Set default controller and method name
@@ -12,7 +12,7 @@ class Handler:
         path_file = 'controllers/'
         method_name = 'index'
         method_args = []
-        
+        return args
         if args:
             # cange all arguments into lists
             method_args = args.split('/')
@@ -29,7 +29,6 @@ class Handler:
         
         path_file += controller.lower()
         path_file += '.py'
-        
         # Does controller file exists?
         if not os.path.isfile(path_file):            
             return web.notfound()#'No controller '+ controller +' exists.'
@@ -49,4 +48,4 @@ class Handler:
             return e 
             return "not found controller "+ controller
         #return args
-        return getattr(controller_instance, method_name)(*method_args)
+        return getattr(controller_instance, method_name)()

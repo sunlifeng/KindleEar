@@ -15,7 +15,7 @@ class Help(BaseHandler):
    
     
     def index(self, **args):
-
+        return web.input()
         try:
 
 

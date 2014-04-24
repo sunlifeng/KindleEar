@@ -27,6 +27,7 @@ supported_languages = ['en','zh-cn','tr-tr'] #不支持的语种则使用第一�
 import web
 import web_controller
 
+
 import jinja2
 from bs4 import BeautifulSoup
 from google.appengine.api import mail
@@ -43,7 +44,7 @@ from lib.makeoeb import *
 from lib.memcachestore import MemcacheStore
 from books import BookClasses, BookClass
 from books.base import BaseFeedBook, UrlEncoding, BaseUrlBook
-
+from lib.helper import singleton
 from model import *
 
 #reload(sys)
@@ -1344,6 +1345,7 @@ class Gear:
 application = web.application(urls, globals())
 store = MemcacheStore(memcache)
 session = web.session.Session(application, store, initializer={'username':'','login':0,"lang":''})
+singleton.session=session
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
 jjenv.filters['filesizeformat'] = fix_filesizeformat
