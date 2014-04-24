@@ -3,6 +3,7 @@
 import gettext
 import web
 import jinja2
+from model import * 
 from lib.helper import Singleton,singleton
 
 
@@ -33,6 +34,14 @@ class BaseHandler(object):
         self.method = web.ctx.get('method')
         #self.params = params
  
+    def getcurrentuser(self):
+        if self.logined():
+            u = KeUser.all().filter("name = ", session.username).get()
+            if not u:
+                raise web.seeother(r'/login')
+            return u
+        else:
+            return None
 
     def redirect(self,path):
          return web.seeother(path)
@@ -42,6 +51,10 @@ class BaseHandler(object):
 
     def render(self, templatefile, title='KindleEar', **kwargs):        
         """ """
+        kwargs.setdefault('nickname', session.get('username'))
+        kwargs.setdefault('lang', session.get('lang', 'en'))
+        #kwargs.setdefault('version', __Version__)
+    
         try:
             return jjenv.get_template(templatefile).render(title=title, **kwargs)
         except Exception, e:
