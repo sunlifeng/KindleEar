@@ -160,8 +160,22 @@ class Home(BaseHandler):
 
     def MySubscription(self,**args):
         user = self.getcurrentuser()
-        
         tips=args["url"]
         myfeeds = user.ownfeeds.feeds if user.ownfeeds else None
+        if self.method=="POST":
+            user = self.getcurrentuser()
+            title = web.input().get('t')
+            url = web.input().get('url')
+            isfulltext = bool(web.input().get('fulltext'))
+            if not title or not url:
+                return self.GET(_("Title or url is empty!"))
+            
+            if not url.lower().startswith('http'): #http and https
+                url = 'http://' + url
+            assert user.ownfeeds
+            Feed(title=title,url=url,book=user.ownfeeds,isfulltext=isfulltext,
+                time=datetime.datetime.utcnow()).put()
+            memcache.delete('%d.feedscount'%user.ownfeeds.key().id())
+            raise web.seeother('/home/MySubscription')
         return self.render('my.html', "My subscription",current='my',
             books=Book.all().filter("builtin = ",True),myfeeds=myfeeds,tips=tips)
