@@ -17,7 +17,8 @@ class Help(BaseHandler):
         #self.session=singleton.session
     #@login_required      
     def index(self, **args):
-        self.redirect(r"/")
+        #return web.input()
+        #self.redirect(r"/")
         #return self.login_required()        
         try:
             #return dir(self)
@@ -28,6 +29,8 @@ class Help(BaseHandler):
             return web.notfound() 
     @login_required      
     def temp(self,**args):
+        if self.method=="post":
+           return "not found "
     	try:
            books=BookClasses()
     	   return  self.render("help.html",'temp',books=books,**args)

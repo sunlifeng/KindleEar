@@ -11,6 +11,7 @@ class Handler(object):
         path_file = 'controllers/'
         method_name = 'index'
         method_args = []        
+        return args 
         if args:
             # cange all arguments into lists
             method_args = args.split('/')
@@ -21,12 +22,15 @@ class Handler(object):
             method_args.pop(0)
             
             # Get mothod name from index 0
+            if len(method_args)>0 and method_args[0]=='':
+                method_args.pop(0)
+
             if len(method_args) > 0 and method_args[0] != '':
                 method_name = method_args[0]
-                method_args.pop(0)
+                method_args.pop(0)            
         path_file += controller.lower()
         path_file += '.py'        
-        
+        #return method_name
         # Does controller file exists?
         if not os.path.isfile(path_file):            
             return web.notfound()#'No controller '+ controller +' exists.'
@@ -44,4 +48,4 @@ class Handler(object):
             return e 
             return "not found controller "+ controller
         #return args
-        return getattr(controller_instance, method_name)(*method_args)
+        return getattr(controller_instance, method_name)(method_args)
