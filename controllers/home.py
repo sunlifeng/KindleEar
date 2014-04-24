@@ -1,9 +1,8 @@
 import web
+from BaseHandler import BaseHandler,login_required
 
 
-views = web.template.render('views/')
-
-
-class Home:
+class Home(BaseHandler):
+    @login_required
     def index(self, *args):
-        return views.index()
+        return self.redirect(r"/")

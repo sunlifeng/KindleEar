@@ -4,15 +4,13 @@ import os, web
 #from controllers import * 
 #import controllers.help
 
-class Handler:  
-
+class Handler(object):  
     def control(self, args = False):        
         # Set default controller and method name
         controller = 'Home'
         path_file = 'controllers/'
         method_name = 'index'
-        method_args = []
-        
+        method_args = []        
         if args:
             # cange all arguments into lists
             method_args = args.split('/')
@@ -26,15 +24,13 @@ class Handler:
             if len(method_args) > 0 and method_args[0] != '':
                 method_name = method_args[0]
                 method_args.pop(0)
-        
         path_file += controller.lower()
-        path_file += '.py'
+        path_file += '.py'        
         
         # Does controller file exists?
         if not os.path.isfile(path_file):            
             return web.notfound()#'No controller '+ controller +' exists.'
         try:
-            
             controller_module= __import__("controllers."+controller.lower(),fromlist='*')            
 
             #controller_module = __import__(os.path.splitext(bkfile)[0])
@@ -42,7 +38,6 @@ class Handler:
             
             controller_instance = getattr(controller_module, controller)()
             # Does method exists?
-
             if not hasattr(controller_instance, method_name):            
                 return web.notfound()#'No method '+ method_name +' exists in ' + controller +' instance.'
         except Exception, e:
