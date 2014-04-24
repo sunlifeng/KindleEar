@@ -11,7 +11,7 @@ class Handler(object):
         path_file = 'controllers/'
         method_name = 'index'
         method_args = []        
-        return args 
+
         if args:
             # cange all arguments into lists
             method_args = args.split('/')
@@ -48,4 +48,4 @@ class Handler(object):
             return e 
             return "not found controller "+ controller
         #return args
-        return getattr(controller_instance, method_name)(method_args)
+        return getattr(controller_instance, method_name)(url=method_args)

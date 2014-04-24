@@ -2,8 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import web
-#import jinja2
-#import gettext
+
 from books import BookClasses, BookClass
 from model import *
 from BaseHandler import BaseHandler,login_required
@@ -19,7 +18,8 @@ class Help(BaseHandler):
     def index(self, **args):
         #return web.input()
         #self.redirect(r"/")
-        #return self.login_required()        
+        #return self.login_required() 
+        #return args        
         try:
             #return dir(self)
             return self.render('dbviewer.html','index',books=Book.all(),users=KeUser.all(),
