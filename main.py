@@ -1208,10 +1208,8 @@ class Gear:
 application = web.application(urls, globals())
 store = MemcacheStore(memcache)
 session = web.session.Session(application, store, initializer={'username':'','login':0,"lang":''})
-<<<<<<< HEAD
-=======
-singleton=Singleton()
->>>>>>> origin/master
+
+
 singleton.session=session
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
