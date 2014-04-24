@@ -239,44 +239,7 @@ class BaseHandler:
 class Home(BaseHandler):
     def GET(self):
         return self.render('home.html',"Home")
-        
-class Setting(BaseHandler):
-    def GET(self, tips=None):
-        user = self.getcurrentuser()
-        return self.render('setting.html',"Setting",
-            current='setting',user=user,mail_sender=SRC_EMAIL,tips=tips)
-        
-    def POST(self):
-        user = self.getcurrentuser()
-        kemail = web.input().get('kindleemail')
-        mytitle = web.input().get("rt")
-        if not kemail:
-            tips = _("Kindle E-mail is requied!")
-        elif not mytitle:
-            tips = _("Title is requied!")
-        else:
-            user.kindle_email = kemail
-            user.timezone = int(web.input().get('timezone', TIMEZONE))
-            user.send_time = int(web.input().get('sendtime'))
-            user.enable_send = bool(web.input().get('enablesend'))
-            user.book_type = web.input().get('booktype')
-            user.device = web.input().get('devicetype') or 'kindle'
-            user.titlefmt = web.input().get('titlefmt')
-            alldays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-            user.send_days = [day for day in alldays if web.input().get(day)]
-            user.merge_books = bool(web.input().get('mergebooks'))
-            user.put()
-            
-            myfeeds = user.ownfeeds
-            myfeeds.language = web.input().get("lng")
-            myfeeds.title = mytitle
-            myfeeds.keep_image = bool(web.input().get("keepimage"))
-            myfeeds.oldest_article = int(web.input().get('oldest', 7))
-            myfeeds.users = [user.name] if web.input().get("enablerss") else []
-            myfeeds.put()
-            tips = _("Settings Saved!")
-        
-        return self.GET(tips)
+
 
 class AdvWhiteList(BaseHandler):
     """ 设置邮件白名单 """
@@ -1304,7 +1267,7 @@ def fix_filesizeformat(value, binary=False):
         return '%.1f %s' % ((base * bytes / unit), prefix)        
 
 urls = (
-  r"/", "Home",
+ 
   "/login", "Login",
   "/logout", "Logout",
   "/mgrpwd/(.*)", "AdminMgrPwd",
