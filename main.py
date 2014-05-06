@@ -30,6 +30,7 @@ import web_controller
 
 import jinja2
 from bs4 import BeautifulSoup
+
 from google.appengine.api import mail
 from google.appengine.ext import db
 from google.appengine.api import taskqueue
@@ -432,7 +433,7 @@ class Login(BaseHandler):
                         fd.delete()
                     bk.delete()
             
-            raise web.seeother(r'/my')
+            raise web.seeother(r'/home/mysubscription')
         else:
             tips = _("The username not exist or password is wrong!")
             session.login = 0

@@ -42,7 +42,7 @@
     <div class="book">
         <div class="titleRow">{{book.title}}</div>
         <div class="cornerControls">
-            <a href="/unsubscribe/{{book.key().id()}}" class="actionButton">{{_("Unsubscribe")}}</a>
+            <a href="/home/unsubscription/{{book.key().id()}}" class="actionButton">{{_("Unsubscribe")}}</a>
         </div>
         <div class="summaryRow">
             {%if book.description|length>80%}{{book.description[:80]}}...<span>{{book.description}}</span>{%else%}{{book.description}}{%endif%}
@@ -58,7 +58,7 @@
     <div class="book">
         <div class="titleRow">{{book.title}}</div>
         <div class="cornerControls">
-            <a href="/subscribe/{{book.key().id()}}" class="actionButton">{{_("Subscribe")}}</a>
+            <a href="/home/subscription/{{book.key().id()}}" class="actionButton">{{_("Subscribe")}}</a>
         </div>
         <div class="summaryRow">
             {%if book.description|length>80%}{{book.description[:80]}}...<span>{{book.description}}</span>{%else%}{{book.description}}{%endif%}

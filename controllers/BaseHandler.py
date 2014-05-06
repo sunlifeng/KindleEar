@@ -11,6 +11,7 @@ from lib.helper import Singleton,singleton
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
                             extensions=["jinja2.ext.do",'jinja2.ext.i18n'])
 session=singleton.session
+
 def set_lang(lang):
     """ 设置网页显示语言 """
     tr = gettext.translation('lang', 'i18n', languages=[lang])
@@ -48,9 +49,20 @@ class BaseHandler(object):
     def redirect(self,path):
          return web.seeother(path)
 
+    @classmethod     
+    def set_session(self,title,value):
+          session.title=value
+    @classmethod
+    def get_session(self,title):
+          return session.get(title)
+
+    def logout(self):
+            pass
+
     def logined(self):
         return True if session.get('login') == 1 else False
 
+    @classmethod    
     def render(self, templatefile, title='KindleEar', **kwargs):        
         """ """
         kwargs.setdefault('nickname', session.get('username'))

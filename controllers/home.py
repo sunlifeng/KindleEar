@@ -5,6 +5,7 @@ import hashlib,time,datetime
 import web
 from config import *
 from model import * 
+
 from BaseHandler import BaseHandler,login_required
 
 
@@ -12,12 +13,40 @@ class Home(BaseHandler):
     """
     首页及帐户管理
     """
-
     def index(self, **args):
         """首页"""
         #default_log.warn("test")
         return self.render('home.html',"Home")
 
+    def login(self,**args):
+
+        def CheckAdminAccount():
+            #判断管理员账号是否存在
+            #如果管理员账号不存在，创建一个，并返回False，否则返回True
+            u = KeUser.all().filter("name = ", 'admin').get()
+            if not u:            
+                myfeeds = Book(title=MY_FEEDS_TITLE,description=MY_FEEDS_DESC,
+                        builtin=False,keep_image=True,oldest_article=7)
+                myfeeds.put()
+                au = KeUser(name='admin',passwd=hashlib.md5('admin').hexdigest(),
+                    kindle_email='',enable_send=False,send_time=8,timezone=TIMEZONE,
+                    book_type="mobi",device='kindle',expires=None,ownfeeds=myfeeds,merge_books=False)
+                au.put()
+                return False
+            else:
+                return True
+
+        tips = ''
+        if not CheckAdminAccount():
+            tips = _("Please use admin/admin to login at first time.")
+        else:
+            tips = _("Please input username and password.")                  
+        if self.get_session('login') == 1:
+            web.seeother(r'/')
+        else:
+            return self.render('login.html',"Login",tips=tips)
+
+    @login_required
     def logs(self,**args):
         """投递日志"""
         user = self.getcurrentuser()
@@ -30,7 +59,6 @@ class Home(BaseHandler):
                     logs[u.name] =  ul
         return self.render('logs.html', "Deliver log", current='logs',
             mylogs=mylogs, logs=logs)
-
 
     @login_required    
     def delaccount(self,**args):
@@ -171,8 +199,48 @@ class Home(BaseHandler):
         return self.render('setting.html',"Setting",
             current='setting',user=user,tips=tips)
         #return self.redirect(r"/setting")
+
     @login_required
-    def MySubscription(self,**args):
+    def unsubscription(self,**args):        
+        id=args["url"][0]
+        username=self.getcurrentuser().name
+        if not id:
+            return "the id is empty!<br />"
+        try:
+            id = int(id)
+        except:
+            return "the id is invalid!<br />"            
+        bk = Book.get_by_id(id)
+        if not bk:
+            return "the book(%d) not exist!<br />" % id        
+        if username in bk.users:
+            bk.users.remove(username)
+            bk.put()
+        raise web.seeother('/home/mysubscription')
+
+    @login_required
+    def subscription(self,**args):
+        """订阅"""
+        id=args["url"][0]
+        username=self.getcurrentuser().name
+
+        if not id:
+            return "the id is empty!<br />"
+        try:
+            id = int(id)
+        except:
+            return "the id is invalid!<br />"
+        bk = Book.get_by_id(id)
+        if not bk:
+            return "the book(%d) not exist!<br />" % id
+        if username not in bk.users:
+            bk.users.append(username)
+            bk.put()
+        raise web.seeother('/home/mysubscription')
+
+    @login_required
+    def mysubscription(self,**args):
+        """已有的订阅"""
         user = self.getcurrentuser()
         tips=args["url"]
         myfeeds = user.ownfeeds.feeds if user.ownfeeds else None
