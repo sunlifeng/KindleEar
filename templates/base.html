@@ -19,9 +19,9 @@
         {% block header %}
         <h1><a href="/">KindleEar</a></h1>
         {% if nickname %}
-          <a class="nav" href="/logout">{{_("Logout")}}</a>
+          <a class="nav" href="/home/logout">{{_("Logout")}}</a>
           <span style="color: #ccc;">&bull;</span>
-        <span>Hello, <a href="/admin"><strong>{{nickname}}</strong></a></span>
+        <span>Hello, <a href="/home/admin"><strong>{{nickname}}</strong></a></span>
         {% else %}
         <form class="pure-form headerloginform" action="/login" method="POST">
             <input type="text" class="pure-u-1-6" placeholder={{_("Name")}} name="u" id="u" />

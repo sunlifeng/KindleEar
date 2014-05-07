@@ -441,13 +441,7 @@ class Login(BaseHandler):
             session.kill()
             return self.render('login.html',"Login",nickname='',tips=tips,username=name)
             
-class Logout(BaseHandler):
-    def GET(self):
-        session.login = 0
-        session.username = ''
-        session.lang = ''
-        session.kill()
-        raise web.seeother(r'/')
+
 
 class AdminMgrPwd(BaseHandler):
     # 管理员修改其他账户的密码

@@ -45,12 +45,13 @@ class Handler(object):
             
             controller_instance = getattr(controller_module, controller)()
             # Does method exists?
-            if not hasattr(controller_instance, method_name):            
+            if not hasattr(controller_instance, method_name):                            
                 return web.notfound()#'No method '+ method_name +' exists in ' + controller +' instance.'
+            return getattr(controller_instance, method_name)(url=method_args)
+
         except Exception, e:
             return e 
             return "not found controller "+ controller
         #return args
 
-        return getattr(controller_instance, method_name)(url=method_args)
 

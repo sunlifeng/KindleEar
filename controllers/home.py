@@ -18,6 +18,7 @@ class Home(BaseHandler):
         #default_log.warn("test")
         return self.render('home.html',"Home")
 
+
     def login(self,**args):
 
         def CheckAdminAccount():
@@ -46,6 +47,44 @@ class Home(BaseHandler):
         else:
             return self.render('login.html',"Login",tips=tips)
 
+    @login_required
+    def mgrpwd(self,**args):
+        user = self.getcurrentuser()
+        name=args["url"][0] 
+        tips = _("Please input new password to confirm!")
+        if self.method=="POST":
+              name, p1, p2 = web.input().get('u'),web.input().get('p1'),web.input().get('p2')              
+              u = KeUser.all().filter("name = ", name).get()
+              if user.name=="admin":
+                if not u:
+                    tips = _("The username '%s' not exist!") % name
+                elif p1 != p2:
+                    tips = _("The two new passwords are dismatch!")
+                else:
+                    try:
+                        pwd = hashlib.md5(p1).hexdigest()
+                    except:
+                        tips = _("The password includes non-ascii chars!")
+                    else:
+                        u.passwd = pwd
+                        u.put()
+                        tips = _("Change password success!")
+
+
+              tips = _("Please input new password to confirm!")
+        return self.render('adminmgrpwd.html', "Change password",
+            tips=tips,username=name)
+    
+
+
+    @login_required
+    def logout(self,**args):
+        if self.get_session('login')==1:
+            self.set_session('login',0)
+            self.set_session('username','')
+        self.redirect("/")
+
+        pass
     @login_required
     def logs(self,**args):
         """投递日志"""

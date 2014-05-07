@@ -51,7 +51,8 @@ class BaseHandler(object):
 
     @classmethod     
     def set_session(self,title,value):
-          session.title=value
+          session[title]=value
+
     @classmethod
     def get_session(self,title):
           return session.get(title)
