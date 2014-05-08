@@ -23,7 +23,7 @@
           <span style="color: #ccc;">&bull;</span>
         <span>Hello, <a href="/home/admin"><strong>{{nickname}}</strong></a></span>
         {% else %}
-        <form class="pure-form headerloginform" action="/login" method="POST">
+        <form class="pure-form headerloginform" action="/home/login" method="POST">
             <input type="text" class="pure-u-1-6" placeholder={{_("Name")}} name="u" id="u" />
             <input type="password" class="pure-u-1-6" placeholder={{_("Password")}} name="p" />
             <input type="submit" class="pure-button pure-button-small" value={{_("Login")}} />

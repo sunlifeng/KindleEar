@@ -36,6 +36,33 @@ class Home(BaseHandler):
                 return False
             else:
                 return True
+        tips = ''
+        if self.method=="POST":
+            name, passwd = web.input().get('u'), web.input().get('p')
+            if name.strip() == '':
+                tips = _("Username is empty!")
+                return self.render('login.html',"Login",nickname='',tips=tips)
+            elif len(name) > 25:
+                tips = _("The len of username reached the limit of 25 chars!")
+                return self.render('login.html',"Login",nickname='',tips=tips,username=name)
+            elif '<' in name or '>' in name or '&' in name:
+                tips = _("The username includes unsafe chars!")
+                return self.render('login.html',"Login",nickname='',tips=tips)
+            CheckAdminAccount() #确认管理员账号是否存在
+            try:
+                pwdhash = hashlib.md5(passwd).hexdigest()
+            except:
+                u = None
+            else:
+                u = KeUser.all().filter("name = ", name).filter("passwd = ", pwdhash).get()            
+            if u:
+                self.set_session("login",1)
+                self.set_session("username",u.name)
+                if u.expires: #用户登陆后自动续期
+                    u.expires = datetime.datetime.utcnow()+datetime.timedelta(days=180)
+                    u.put()
+                raise web.seeother(r'/home/mysubscription')
+
 
         tips = ''
         if not CheckAdminAccount():
@@ -46,6 +73,7 @@ class Home(BaseHandler):
             web.seeother(r'/')
         else:
             return self.render('login.html',"Login",tips=tips)
+
 
     @login_required
     def mgrpwd(self,**args):
@@ -75,7 +103,20 @@ class Home(BaseHandler):
         return self.render('adminmgrpwd.html', "Change password",
             tips=tips,username=name)
     
-
+    @login_required
+    def delfeed(self,**args):
+        user = self.getcurrentuser()
+        id=args["url"][0]
+        if not id:
+            return "the id is empty!<br />"
+        try:
+            id = int(id)
+        except:
+            return "the id is invalid!<br />"
+        feed = Feed.get_by_id(id)
+        if feed:
+            feed.delete()
+        raise web.seeother('/home/mysubscription')
 
     @login_required
     def logout(self,**args):

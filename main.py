@@ -341,70 +341,10 @@ class AdvDel(BaseHandler):
 
        
 class Login(BaseHandler):
-    def CheckAdminAccount(self):
-        #判断管理员账号是否存在
-        #如果管理员账号不存在，创建一个，并返回False，否则返回True
-        u = KeUser.all().filter("name = ", 'admin').get()
-        if not u:            
-            myfeeds = Book(title=MY_FEEDS_TITLE,description=MY_FEEDS_DESC,
-                    builtin=False,keep_image=True,oldest_article=7)
-            myfeeds.put()
-            au = KeUser(name='admin',passwd=hashlib.md5('admin').hexdigest(),
-                kindle_email='',enable_send=False,send_time=8,timezone=TIMEZONE,
-                book_type="mobi",device='kindle',expires=None,ownfeeds=myfeeds,merge_books=False)
-            au.put()
-            return False
-        else:
-            return True
-            
-    def GET(self):
-        # 第一次登陆时如果没有管理员帐号，
-        # 则增加一个管理员帐号admin，密码admin，后续可以修改密码
-        tips = ''
-        if not self.CheckAdminAccount():
-            tips = _("Please use admin/admin to login at first time.")
-        else:
-            tips = _("Please input username and password.")
-            tips = _("Please input username and password.")
-        
-        if session.get('login') == 1:
-            web.seeother(r'/')
-        else:
-            return self.render('login.html',"Login",tips=tips)
-        
-    def POST(self):
-        name, passwd = web.input().get('u'), web.input().get('p')
-        if name.strip() == '':
-            tips = _("Username is empty!")
-            return self.render('login.html',"Login",nickname='',tips=tips)
-        elif len(name) > 25:
-            tips = _("The len of username reached the limit of 25 chars!")
-            return self.render('login.html',"Login",nickname='',tips=tips,username=name)
-        elif '<' in name or '>' in name or '&' in name:
-            tips = _("The username includes unsafe chars!")
-            return self.render('login.html',"Login",nickname='',tips=tips)
-        
-        self.CheckAdminAccount() #确认管理员账号是否存在
-        
-        try:
-            pwdhash = hashlib.md5(passwd).hexdigest()
-        except:
-            u = None
-        else:
-            u = KeUser.all().filter("name = ", name).filter("passwd = ", pwdhash).get()
-        if u:
-            session.login = 1
-            session.username = name
-            if u.expires: #用户登陆后自动续期
-                u.expires = datetime.datetime.utcnow()+datetime.timedelta(days=180)
-                u.put()
-                
-            #修正从1.6.15之前的版本升级过来后自定义RSS丢失的问题
-            for fd in Feed.all():
-                if not fd.time:
-                    fd.time = datetime.datetime.utcnow()
-                    fd.put()
-            
+    """ 遗留部分代码 做些定期清理的工作 
+    """
+    def function(self):
+
             #1.7新增各用户独立的白名单和URL过滤器，这些处理是为了兼容以前的版本
             if name == 'admin':
                 for wl in WhiteList.all():
@@ -433,125 +373,18 @@ class Login(BaseHandler):
                         fd.delete()
                     bk.delete()
             
-            raise web.seeother(r'/home/mysubscription')
-        else:
-            tips = _("The username not exist or password is wrong!")
-            session.login = 0
-            session.username = ''
-            session.kill()
-            return self.render('login.html',"Login",nickname='',tips=tips,username=name)
-            
-
-
-class AdminMgrPwd(BaseHandler):
-    # 管理员修改其他账户的密码
-    def GET(self, name):
-        self.login_required('admin')
-        tips = _("Please input new password to confirm!")
-        return self.render('adminmgrpwd.html', "Change password",
-            tips=tips,username=name)
-        
-    def POST(self, _n=None):
-        self.login_required('admin')
-        name, p1, p2 = web.input().get('u'),web.input().get('p1'),web.input().get('p2')
-        if name:
-            u = KeUser.all().filter("name = ", name).get()
-            if not u:
-                tips = _("The username '%s' not exist!") % name
-            elif p1 != p2:
-                tips = _("The two new passwords are dismatch!")
+                raise web.seeother(r'/home/mysubscription')
             else:
-                try:
-                    pwd = hashlib.md5(p1).hexdigest()
-                except:
-                    tips = _("The password includes non-ascii chars!")
-                else:
-                    u.passwd = pwd
-                    u.put()
-                    tips = _("Change password success!")
-        else:
-            tips = _("Username is empty!")
-        
-        return self.render('adminmgrpwd.html', "Change password",
-            tips=tips, username=name)
+                tips = _("The username not exist or password is wrong!")
+                session.login = 0
+                session.username = ''
+                session.kill()
+                return self.render('login.html',"Login",nickname='',tips=tips,username=name)
+                
 
-class MySubscription(BaseHandler):
-    # 管理我的订阅和杂志列表
-    def GET(self, tips=None):
-        user = self.getcurrentuser()
-        myfeeds = user.ownfeeds.feeds if user.ownfeeds else None
-        return self.render('my.html', "My subscription",current='my',
-            books=Book.all().filter("builtin = ",True),myfeeds=myfeeds,tips=tips)
-    
-    def POST(self): # 添加自定义RSS
-        user = self.getcurrentuser()
-        title = web.input().get('t')
-        url = web.input().get('url')
-        isfulltext = bool(web.input().get('fulltext'))
-        if not title or not url:
-            return self.GET(_("Title or url is empty!"))
-        
-        if not url.lower().startswith('http'): #http and https
-            url = 'http://' + url
-        assert user.ownfeeds
-        Feed(title=title,url=url,book=user.ownfeeds,isfulltext=isfulltext,
-            time=datetime.datetime.utcnow()).put()
-        memcache.delete('%d.feedscount'%user.ownfeeds.key().id())
-        raise web.seeother('/my')
-        
-class Subscribe(BaseHandler):
-    def GET(self, id):
-        self.login_required()
-        if not id:
-            return "the id is empty!<br />"
-        try:
-            id = int(id)
-        except:
-            return "the id is invalid!<br />"
-        
-        bk = Book.get_by_id(id)
-        if not bk:
-            return "the book(%d) not exist!<br />" % id
-        
-        if session.username not in bk.users:
-            bk.users.append(session.username)
-            bk.put()
-        raise web.seeother('/my')
-        
-class Unsubscribe(BaseHandler):
-    def GET(self, id):
-        self.login_required()
-        if not id:
-            return "the id is empty!<br />"
-        try:
-            id = int(id)
-        except:
-            return "the id is invalid!<br />"
-            
-        bk = Book.get_by_id(id)
-        if not bk:
-            return "the book(%d) not exist!<br />" % id
-        
-        if session.username in bk.users:
-            bk.users.remove(session.username)
-            bk.put()
-        raise web.seeother('/my')
 
-class DelFeed(BaseHandler):
-    def GET(self, id):
-        user = self.getcurrentuser()
-        if not id:
-            return "the id is empty!<br />"
-        try:
-            id = int(id)
-        except:
-            return "the id is invalid!<br />"
-        
-        feed = Feed.get_by_id(id)
-        if feed:
-            feed.delete()
-        
-        raise web.seeother('/my')
+
+ 
                 
 class Deliver(BaseHandler):
     """ 判断需要推送哪些书籍 """
