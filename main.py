@@ -9,7 +9,8 @@
 __Version__ = "1.12"
 __Author__ = "cdhigh"
 
-import os, datetime, logging, __builtin__, hashlib, time
+import site
+import os, datetime, logging, __builtin__, hashlib, time,sys
 from collections import OrderedDict, defaultdict
 import gettext
 import re
@@ -24,10 +25,10 @@ __builtin__.__dict__['IsRunInLocal'] = IsRunInLocal
 supported_languages = ['en','zh-cn','tr-tr'] #不支持的语种则使用第一个语言
 #gettext.install('lang', 'i18n', unicode=True) #for calibre startup
 
+# site.addsitedir('lib')
+sys.path.insert(0, 'lib.zip')
 import web
 import web_controller
-
-
 import jinja2
 from bs4 import BeautifulSoup
 

@@ -21,7 +21,7 @@ def set_lang(lang):
 def login_required(f):
     def new_f(*args, **kwargs):
         if (session.get('login') != 1) :
-            return web.seeother(r'/login')
+            return web.seeother(r'/home/login')
         else: 
             return f(*args, **kwargs)
     new_f.__name__=f.__name__
