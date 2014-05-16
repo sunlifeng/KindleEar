@@ -85,7 +85,7 @@ for book in BookClasses():  #添加内置书籍
         b.put()
         memcache.add(book.title, book.description, 86400)
 
-class BaseHandler:
+class BaseHandler(object):
     " URL请求处理类的基类，实现一些共同的工具函数 "
     def __init__(self):
         if not session.get('lang'):
@@ -238,7 +238,6 @@ class BaseHandler:
         kwargs.setdefault('lang', session.get('lang', 'en'))
         kwargs.setdefault('version', __Version__)
         return jjenv.get_template(templatefile).render(title=title, **kwargs)
-        
 
 
 class AdvWhiteList(BaseHandler):
@@ -381,10 +380,6 @@ class Login(BaseHandler):
                 session.username = ''
                 session.kill()
                 return self.render('login.html',"Login",nickname='',tips=tips,username=name)
-                
-
-
-
  
                 
 class Deliver(BaseHandler):
@@ -1020,13 +1015,10 @@ class Gear:
         return hendler.control(args)
     def POST(self,args=False):
         return hendler.control(args)
-        
-
 
 application = web.application(urls, globals())
 store = MemcacheStore(memcache)
 session = web.session.Session(application, store, initializer={'username':'','login':0,"lang":''})
-
 
 singleton.session=session
 jjenv = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),

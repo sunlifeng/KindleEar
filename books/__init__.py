@@ -28,6 +28,6 @@ for bkfile in os.listdir(os.path.dirname(__file__)):
             RegisterBook(bk)
         except Exception as e:
             default_log.warn("Book '%s' import failed : %s" % (bookname,e))
-default_log.warn("Book '%s' import failed :" % (_booksclasses))
+            default_log.warn("Book '%s' import failed :" % (_booksclasses))
 
 #LoadBooks()
